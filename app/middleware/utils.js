@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const requestIp = require('request-ip')
 const { validationResult } = require('express-validator')
+const User = require('../models/user')
 
 /**
  * Removes extension from file
@@ -130,4 +131,17 @@ exports.itemAlreadyExists = (err, item, reject, message) => {
   if (item) {
     reject(this.buildErrObject(422, message))
   }
+}
+
+/**
+ * Finds user by ID
+ * @param {string} id - user´s id
+ */
+const findUserById = async (userId) => {
+  return new Promise((resolve, reject) => {
+    User.findById(userId, (err, item) => {
+      utils.itemNotFound(err, item, reject, 'USER_DOES_NOT_EXIST')
+      resolve(item)
+    })
+  })
 }

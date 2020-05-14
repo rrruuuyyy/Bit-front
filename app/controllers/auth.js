@@ -447,9 +447,28 @@ const getUserFromToken = async (token) => {
   })
 }
 
+
 /********************
  * Public functions *
  ********************/
+/**
+ * Login function called by route
+ * @param {String} bearer - token in req.headers.authorization 
+ */
+exports.getUserFromBearerToken = async (bearer) => {
+  return new Promise((resolve, reject) => {
+    const tokenEncrypted = bearer
+        .replace('Bearer ', '')
+        .trim()
+    jwt.verify(auth.decrypt(tokenEncrypted), process.env.JWT_SECRET, async (err, decoded) => {
+      if (err) {
+        reject(utils.buildErrObject(409, 'BAD_TOKEN'))
+      }
+      var user = await User.findById(decoded.data._id)
+      resolve(user)
+    })
+  })
+}
 
 /**
  * Login function called by route
@@ -599,8 +618,8 @@ exports.ownerOrAdmin = () => async (req, res, next) => {
     const tokenEncrypted = req.headers.authorization
       .replace('Bearer ', '')
       .trim()
-    let userId = await getUserIdFromToken(tokenEncrypted)
     userId = await utils.isIDGood(userId)
+    let userId = await getUserIdFromToken(tokenEncrypted)
     console.log(userId)
     const data = {
       id: req.user._id,

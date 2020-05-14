@@ -102,6 +102,23 @@ module.exports = {
       })
     })
   },
+  /**
+   * Gets items from database by user_id
+   * @param {Object} req - request object
+   * @param {Object} query - query object
+   * @param {String} user_id - Id from user token
+   */
+  async getItemsByUserId(req, model, query, user_id) {
+    const options = await listInitOptions(req)
+    return new Promise((resolve, reject) => {
+      model.find({user_id:user_id}).paginate(query, options, (err, items) => {
+        if (err) {
+          reject(buildErrObject(422, err.message))
+        }
+        resolve(cleanPaginationID(items))
+      })
+    })
+  },
 
   /**
    * Gets item from database by id

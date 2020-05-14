@@ -11,7 +11,7 @@
   "scripts": {
     "mocha": "nyc mocha --timeout=5000 --exit",
     "test": "npm run fresh && npm run mocha",
-    "dev": "nodemon server.js",
+    "dev": "cross-env NODE_ENV=development nodemon server.js",
     "fresh": "npm run clean && npm run seed",
     "clean": "node clean.js",
     "seed": "node seed.js",
