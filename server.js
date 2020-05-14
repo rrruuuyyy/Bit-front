@@ -10,6 +10,7 @@ const app = express()
 const i18n = require('i18n')
 const initMongo = require('./config/mongo')
 const path = require('path')
+const fileUpload = require('express-fileupload');
 
 // Setup express server port from ENV, default: 3000
 app.set('port', process.env.PORT || 3000)
@@ -58,6 +59,7 @@ app.use(i18n.init)
 
 // Init all other stuff
 app.use(cors())
+app.use(fileUpload());
 app.use(passport.initialize())
 app.use(compression())
 app.use(helmet())

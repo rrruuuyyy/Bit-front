@@ -618,9 +618,8 @@ exports.ownerOrAdmin = () => async (req, res, next) => {
     const tokenEncrypted = req.headers.authorization
       .replace('Bearer ', '')
       .trim()
-    userId = await utils.isIDGood(userId)
     let userId = await getUserIdFromToken(tokenEncrypted)
-    console.log(userId)
+    userId = await utils.isIDGood(userId)
     const data = {
       id: req.user._id,
       roles: ['admin']

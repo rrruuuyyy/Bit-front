@@ -69,3 +69,6 @@ typings/
 .env.production
 
 .history/
+
+# ignore folder uploads
+uploads

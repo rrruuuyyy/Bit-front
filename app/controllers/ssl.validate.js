@@ -10,8 +10,13 @@ exports.createItem = [
       .withMessage('MISSING')
       .not()
       .isEmpty()
-      .withMessage('IS_EMPTY')
-      .trim(),
+      .withMessage('IS_EMPTY'),    
+    check('password_file')
+      .exists()
+      .withMessage('MISSING')
+      .not()
+      .isEmpty()
+      .withMessage('IS_EMPTY'),    
     (req, res, next) => {
       validationResult(req, res, next)
     }

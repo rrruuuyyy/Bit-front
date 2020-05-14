@@ -145,3 +145,10 @@ const findUserById = async (userId) => {
     })
   })
 }
+/**
+ * Get the file extension
+ * @param {string} filename - name of file
+ */
+exports.getFileExtension = async (filename) => {
+  return filename.slice((filename.lastIndexOf(".") - 1 >>> 0) + 2);
+}
