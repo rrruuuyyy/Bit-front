@@ -30,9 +30,9 @@ router.get(
  */
 router.post(
   '/',
-  // requireAuth,
-  // AuthController.roleAuthorization(['admin']),
-  // trimRequest.all,
+  requireAuth,
+  AuthController.roleAuthorization(['admin']),
+  trimRequest.all,
   validate.createItem,
   controller.createItem
 )
