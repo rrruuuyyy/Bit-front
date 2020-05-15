@@ -33,11 +33,13 @@ const listInitOptions = async (req) => {
     const order = req.query.order || -1
     const sort = req.query.sort || 'createdAt'
     const sortBy = buildSort(sort, order)
+    const populate = req.query.populate
     const page = parseInt(req.query.page, 10) || 1
     const limit = parseInt(req.query.limit, 10) || 5
     const options = {
       sort: sortBy,
       lean: true,
+      populate: populate,
       page,
       limit
     }
@@ -111,7 +113,7 @@ module.exports = {
   async getItemsByUserId(req, model, query, user_id) {
     const options = await listInitOptions(req)
     return new Promise((resolve, reject) => {
-      model.find({user_id:user_id}).paginate(query, options, (err, items) => {
+      model.paginate({user_id:user_id}, options, (err, items) => {
         if (err) {
           reject(buildErrObject(422, err.message))
         }

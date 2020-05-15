@@ -12,6 +12,8 @@ const initMongo = require('./config/mongo')
 const path = require('path')
 const fileUpload = require('express-fileupload');
 
+app.use(express.static(process.cwd()+"/views/angular_system/"));
+
 // Setup express server port from ENV, default: 3000
 app.set('port', process.env.PORT || 3000)
 

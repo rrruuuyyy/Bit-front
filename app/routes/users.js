@@ -60,6 +60,17 @@ router.patch(
   validate.updateItem,
   controller.updateItem
 )
+/*
+ * Update the password item route
+ */
+router.patch(
+  '/password_change/:id',
+  requireAuth,
+  [AuthController.roleAuthorization(['admin'])],
+  trimRequest.all,
+  validate.updatePassword,
+  controller.updatePassword
+)
 
 /*
  * Delete item route

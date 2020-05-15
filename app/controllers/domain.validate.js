@@ -5,18 +5,20 @@ const { check } = require('express-validator')
  * Validates create new item request
  */
 exports.createItem = [
-    check('name')
+    check('user')
       .exists()
       .withMessage('MISSING')
       .not()
       .isEmpty()
-      .withMessage('IS_EMPTY'),    
-    check('password_file')
+      .withMessage('IS_EMPTY')
+      .trim(),
+    check('path')
       .exists()
       .withMessage('MISSING')
       .not()
       .isEmpty()
-      .withMessage('IS_EMPTY'),    
+      .withMessage('IS_EMPTY')
+      .trim(),
     (req, res, next) => {
       validationResult(req, res, next)
     }
@@ -26,18 +28,20 @@ exports.createItem = [
    * Validates update item request
    */
   exports.updateItem = [
-    check('name')
+    check('user')
       .exists()
       .withMessage('MISSING')
       .not()
       .isEmpty()
-      .withMessage('IS_EMPTY'),
-    check('id')
+      .withMessage('IS_EMPTY')
+      .trim(),
+    check('path')
       .exists()
       .withMessage('MISSING')
       .not()
       .isEmpty()
-      .withMessage('IS_EMPTY'),
+      .withMessage('IS_EMPTY')
+      .trim(),
     (req, res, next) => {
       validationResult(req, res, next)
     }
@@ -62,20 +66,6 @@ exports.createItem = [
    * Validates delete item request
    */
   exports.deleteItem = [
-    check('id')
-      .exists()
-      .withMessage('MISSING')
-      .not()
-      .isEmpty()
-      .withMessage('IS_EMPTY'),
-    (req, res, next) => {
-      validationResult(req, res, next)
-    }
-  ]
-  /**
-   * Validates dowload item request
-   */
-  exports.downloadItem = [
     check('id')
       .exists()
       .withMessage('MISSING')

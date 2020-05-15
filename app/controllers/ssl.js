@@ -5,7 +5,7 @@ const db = require('../middleware/db')
 const auth = require('../controllers/auth')
 var fs = require('fs');
 const path = `./uploads`;
-
+var AdmZip = require('adm-zip');
 
 /********************
  * Public functions *
@@ -19,8 +19,8 @@ const path = `./uploads`;
 exports.getAllItems = async (req, res) => {
   try {
     var user = await auth.getUserFromBearerToken(req.headers.authorization)
+    var query = await db.checkQueryString(req.query)
     if( user.role === 'admin' ){
-      const query = await db.checkQueryString(req.query)
       res.status(200).json(await db.getItems(req, model, query))
     }else{
       res.status(200).json(await db.getItemsByUserId(req, model, query, user._id))
@@ -95,11 +95,11 @@ exports.updateItem = async (req, res) => {
       });
       var anterior = await model.findById(id)
       // Ahora eliminamos los archivos anteriores
-      await fs.unlinkSync(`./uploads/${anterior.name_file}.csr`, function(err) {
+      await fs.unlinkSync(`${path}/${anterior.name_file}.csr`, function(err) {
         if (err)
         return res.status(500).send(err);
       });
-      await fs.unlinkSync(`./uploads/${anterior.name_file}.key`, function(err) {
+      await fs.unlinkSync(`${path}/${anterior.name_file}.key`, function(err) {
         if (err)
         return res.status(500).send(err);
       });
@@ -119,19 +119,41 @@ exports.updateItem = async (req, res) => {
 exports.deleteItem = async (req, res) => {
   try {
     req = matchedData(req)
-    console.log(req)
     const id = await utils.isIDGood(req.id)
     var files = await model.findById(id)
     // Ahora eliminamos los archivos anteriores
-    await fs.unlinkSync(`./uploads/${files.name_file}.csr`, function(err) {
+    await fs.unlinkSync(`${path}/${files.name_file}.csr`, function(err) {
       if (err)
       return res.status(500).send(err);
     });
-    await fs.unlinkSync(`./uploads/${files.name_file}.key`, function(err) {
+    await fs.unlinkSync(`${path}/${files.name_file}.key`, function(err) {
       if (err)
       return res.status(500).send(err);
     });
     res.status(200).json(await db.deleteItem(id, model))
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+/**
+ * Download files item function called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.downloadItems = async (req, res) => {
+  try {
+    req = matchedData(req)
+    const id = await utils.isIDGood(req.id)
+    var files = await model.findById(id)
+    // creating archives
+    var zip = new AdmZip();
+    // add local file
+    zip.addLocalFile(`${path}/${files.name_file}.csr`,);
+    zip.addLocalFile(`${path}/${files.name_file}.key`,);
+    // get everything as a buffer
+    var willSendthis = zip.toBuffer();
+    res.writeHead(200, {'Content-disposition': 'attachment; filename=Ssl_files.zip"}'});
+    res.end(willSendthis)
   } catch (error) {
     utils.handleError(res, error)
   }

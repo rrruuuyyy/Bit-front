@@ -39,34 +39,14 @@ exports.createItem = [
     .isIn(['user', 'admin'])
     .withMessage('USER_NOT_IN_KNOWN_ROLE'),
   check('phone')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
+    .optional()
     .trim(),
   check('city')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
+    .optional()
     .trim(),
   check('country')
-    .exists()
-    .withMessage('MISSING')
-    .not()
-    .isEmpty()
-    .withMessage('IS_EMPTY')
+    .optional()
     .trim(),
-  check('urlTwitter')
-    .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
-  check('urlGitHub')
-    .optional()
-    .custom((v) => (v === '' ? true : validator.isURL(v)))
-    .withMessage('NOT_A_VALID_URL'),
   (req, res, next) => {
     validationResult(req, res, next)
   }
@@ -82,53 +62,59 @@ exports.updateItem = [
     .not()
     .isEmpty()
     .withMessage('IS_EMPTY'),
-  // check('email')
-  //   .exists()
-  //   .withMessage('MISSING')
-  //   .not()
-  //   .isEmpty()
-  //   .withMessage('IS_EMPTY'),
-  // check('role')
-  //   .exists()
-  //   .withMessage('MISSING')
-  //   .not()
-  //   .isEmpty()
-  //   .withMessage('IS_EMPTY'),
-  // check('phone')
-  //   .exists()
-  //   .withMessage('MISSING')
-  //   .not()
-  //   .isEmpty()
-  //   .withMessage('IS_EMPTY')
-  //   .trim(),
-  // check('city')
-  //   .exists()
-  //   .withMessage('MISSING')
-  //   .not()
-  //   .isEmpty()
-  //   .withMessage('IS_EMPTY')
-  //   .trim(),
-  // check('country')
-  //   .exists()
-  //   .withMessage('MISSING')
-  //   .not()
-  //   .isEmpty()
-  //   .withMessage('IS_EMPTY')
-  //   .trim(),
-  // check('urlTwitter')
-  //   .optional()
-  //   .custom((v) => (v === '' ? true : validator.isURL(v)))
-  //   .withMessage('NOT_A_VALID_URL'),
-  // check('urlGitHub')
-  //   .optional()
-  //   .custom((v) => (v === '' ? true : validator.isURL(v)))
-  //   .withMessage('NOT_A_VALID_URL'),
-  // check('id')
-  //   .exists()
-  //   .withMessage('MISSING')
-  //   .not()
-  //   .isEmpty()
-  //   .withMessage('IS_EMPTY'),
+  check('email')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .isEmail()
+    .withMessage('EMAIL_IS_NOT_VALID'),
+  check('role')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .isIn(['user', 'admin'])
+    .withMessage('USER_NOT_IN_KNOWN_ROLE'),
+  check('phone')
+    .optional()
+    .trim(),
+  check('city')
+    .optional()
+    .trim(),
+  check('country')
+    .optional()
+    .trim(),
+  (req, res, next) => {
+    validationResult(req, res, next)
+  }
+]
+/**
+ * Validates update the password item request
+ */
+exports.updatePassword = [
+  check('password')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .isLength({
+      min: 5
+    })
+    .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
+  check('c_password')
+    .exists()
+    .withMessage('MISSING')
+    .not()
+    .isEmpty()
+    .withMessage('IS_EMPTY')
+    .isLength({
+      min: 5
+    })
+    .withMessage('PASSWORD_TOO_SHORT_MIN_5'),
   (req, res, next) => {
     validationResult(req, res, next)
   }

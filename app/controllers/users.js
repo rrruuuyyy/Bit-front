@@ -5,6 +5,7 @@ const utils = require('../middleware/utils')
 const db = require('../middleware/db')
 const emailer = require('../middleware/emailer')
 const BitNinja = require('../middleware/bitninja')
+const bcrypt = require('bcrypt')
 
 /*********************
  * Private functions *
@@ -87,10 +88,32 @@ exports.getItem = async (req, res) => {
  */
 exports.updateItem = async (req, res) => {
   try {
-    const id = req.params.id
+    var _id = req.params.id
     req = matchedData(req)
-    // console.log(req)
-    // const id = await utils.isIDGood(req.id)
+    const id = await utils.isIDGood(_id)
+    const doesEmailExists = await emailer.emailExistsExcludingMyself(
+      id,
+      req.email
+    )
+    if (!doesEmailExists) {
+      res.status(200).json(await db.updateItem(id, model, req))
+    }
+    res.status(200).json(await db.updateItem(id, model, req))
+  } catch (error) {
+    utils.handleError(res, error)
+  }
+}
+/**
+ * Update password called by route
+ * @param {Object} req - request object
+ * @param {Object} res - response object
+ */
+exports.updatePassword = async (req, res) => {
+  try {
+    var _id = req.params.id
+    req = matchedData(req)
+    const id = await utils.isIDGood(_id)
+    req.password  = await bcrypt.hash(req.password, 5)
     // const doesEmailExists = await emailer.emailExistsExcludingMyself(
     //   id,
     //   req.email
@@ -125,6 +148,7 @@ exports.createItem = async (req, res) => {
       res.status(201).json(item)
     }
   } catch (error) {
+    console.log(error)
     utils.handleError(res, error)
   }
 }

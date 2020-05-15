@@ -25,7 +25,7 @@ fs.readdirSync(routesPath).filter((file) => {
  * Setup routes for index
  */
 router.get('/', (req, res) => {
-  res.render('index')
+  res.sendFile(process.cwd()+"/views/index.html")
 })
 
 /*
@@ -37,6 +37,9 @@ router.use('*', (req, res) => {
       msg: 'URL_NOT_FOUND'
     }
   })
+})
+router.use('*', function(req, res) {
+  res.sendfile(process.cwd()+"/views/index.html")
 })
 
 module.exports = router
