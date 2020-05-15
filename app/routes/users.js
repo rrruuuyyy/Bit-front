@@ -32,7 +32,7 @@ router.post(
   '/',
   // requireAuth,
   // AuthController.roleAuthorization(['admin']),
-  trimRequest.all,
+  // trimRequest.all,
   validate.createItem,
   controller.createItem
 )
