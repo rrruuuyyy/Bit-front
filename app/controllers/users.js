@@ -1,4 +1,5 @@
 const model = require('../models/user')
+const Credential = require('../models/credentials')
 const uuid = require('uuid')
 const { matchedData } = require('express-validator')
 const utils = require('../middleware/utils')
@@ -139,7 +140,8 @@ exports.createItem = async (req, res) => {
     req = matchedData(req)
     const doesEmailExists = await emailer.emailExists(req.email)
     if (!doesEmailExists) {
-      await BitNinja.getTokenBitNinja().then((resp) => {
+      var cred = await Credential.find({type:'bitninja'})
+      await BitNinja.getTokenBitNinja(cred[0].email,cred[0].password).then((resp) => {
         req.token = resp.token
         req.refreshToken = resp.refreshToken
       })
